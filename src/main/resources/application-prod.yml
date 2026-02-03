@@ -1,13 +1,17 @@
 spring:
   config:
-    activate:
-      on-profile: prod
+    import: aws-parameterstore:/member/prod/
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${db.url}
+    username: ${db.username}
+    password: ${db.password}
 
-  jpa:
-    hibernate:
-      ddl-auto: update
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+info:
+  team-name: ${team-name}
