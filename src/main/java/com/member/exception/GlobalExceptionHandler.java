@@ -1,5 +1,6 @@
 package com.member.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleAny(Exception e) {
+    public ResponseEntity<ErrorResponse> handleAny(Exception e, HttpServletRequest request) {
+
+        // Actuator 요청은 GlobalExceptionHandler에서 잡지 않도록 제외
+        String uri = request.getRequestURI();
+        if (uri != null && uri.startsWith("/actuator")) {
+            throw new RuntimeException(e); // 예외를 다시 던져서 Actuator가 원래 방식대로 처리하게 함
+        }
+
         log.error("[ERROR] unexpected", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse("INTERNAL_ERROR", "unexpected error"));
