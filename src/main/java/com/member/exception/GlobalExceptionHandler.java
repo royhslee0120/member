@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "com.member.controller")
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
